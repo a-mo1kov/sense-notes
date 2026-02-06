@@ -35,6 +35,10 @@ class UserAuth {
 		try {
 			const { username, password } = req.body;
 
+			if (!username || !password) {
+				throw new ApiError(400, 'Username and password are required');
+			}
+
 			// Authenticate user and retrieve JWT token
 			const token = await userService.serviceLogin(username, password);
 
