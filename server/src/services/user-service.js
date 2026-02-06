@@ -25,8 +25,9 @@ class UserService {
 	//Processes user authentication and issues a token.
 	async serviceLogin(username, password) {
 		const userRequest = await UserDatabase.findUser(username);
+
 		if (userRequest.rows.length === 0) {
-			throw new ApiError(404, 'Person not found in the system.');
+			throw new ApiError(401, 'Invalid username or password');
 		}
 
 		const user = userRequest.rows[0];
@@ -34,7 +35,7 @@ class UserService {
 		const validPassword = await Bcrypt.isValidPassword(password, user.password_hash);
 
 		if (!validPassword) {
-			throw new ApiError(400, 'Incorrect data.');
+			throw new ApiError(401, 'Invalid username or password');
 		}
 
 		return generateToken(user.id, user.username);
